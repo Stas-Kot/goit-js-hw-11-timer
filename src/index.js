@@ -1,34 +1,35 @@
 import './sass/main.scss';
 
 const refs = {
-    clockfaceDays: document.querySelector('.value[data-value="days"]'),
-    clockfaceHours: document.querySelector('.value[data-value="hours"]'),
-    clockfaceMinutes: document.querySelector('.value[data-value="mins"]'),
-    clockfaceSeconds: document.querySelector('.value[data-value="secs"]'),
+    timerfaceDays: document.querySelector('.value[data-value="days"]'),
+    timerfaceHours: document.querySelector('.value[data-value="hours"]'),
+    timerfaceMinutes: document.querySelector('.value[data-value="mins"]'),
+    timerfaceSeconds: document.querySelector('.value[data-value="secs"]'),
 }
 
 
 
 class CountdownTimer {
-    constructor({onTick}) {
-        this.intervalId = null;
+    constructor({onTick, selector, targetDate}) {
+        // this.intervalId = null;
         this.onTick = onTick;
+        this.selector = selector;
+        this.targetDate = targetDate;
+        this.start();
     }
 
     start() {
-        const targetTime = new Date('May 22, 2021');
-        
         setInterval(() => {
             const currentTime = Date.now();
-            const deltaTime = targetTime - currentTime;
-            const { days, hours, mins, secs } = this.getDaysAndTimeComponents(deltaTime);
+            const deltaTime = this.targetDate - currentTime;
+            const time = this.getTimerComponents(deltaTime);
             
-            this.onTick(days, hours, mins, secs);
+            this.onTick(time);
         }, 1000);
         
     }
 
-    getDaysAndTimeComponents(time) {
+    getTimerComponents(time) {
     const days = this.pad(Math.floor(time / (1000 * 60 * 60 * 24)));
     const hours = this.pad(Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
     const mins = this.pad(Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)));
@@ -45,14 +46,16 @@ class CountdownTimer {
 }
     
 const countdownTimer = new CountdownTimer({
-    onTick: updateClockface
+    onTick: updateTimerface,
+    selector: '#timer-1',
+    targetDate: new Date('May 22, 2021'),
 });
 
-countdownTimer.start();
 
 
 
-function updateClockface(days, hours, mins, secs) {
+
+function updateTimerface({days, hours, mins, secs}) {
     updateDays(days);
     updateHours(hours);
     updateMinutes(mins);
@@ -60,19 +63,19 @@ function updateClockface(days, hours, mins, secs) {
 }
 
 function updateDays(days) {
-    refs.clockfaceDays.textContent = `${days}`;
+    refs.timerfaceDays.textContent = `${days}`;
 }
 
 function updateHours(hours) {
-    refs.clockfaceHours.textContent = `${hours}`;
+    refs.timerfaceHours.textContent = `${hours}`;
 }
 
 function updateMinutes(minutes) {
-    refs.clockfaceMinutes.textContent = `${minutes}`;
+    refs.timerfaceMinutes.textContent = `${minutes}`;
 }
 
 function updateSeconds(seconds) {
-    refs.clockfaceSeconds.textContent = `${seconds}`;
+    refs.timerfaceSeconds.textContent = `${seconds}`;
 }
 
 
